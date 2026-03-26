@@ -1,0 +1,13 @@
+name: Elixir CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    uses: leandrocp/github-actions/.github/workflows/elixir-test.yml@main
+  lint:
+    uses: leandrocp/github-actions/.github/workflows/elixir-lint.yml@main

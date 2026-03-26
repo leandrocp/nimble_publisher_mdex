@@ -1,6 +1,50 @@
 defmodule NimblePublisherMDExTest do
   use ExUnit.Case
 
+  describe "deep_merge/2" do
+    test "recursively merges nested keyword lists" do
+      base = [
+        extension: [table: true, phoenix_heex: true],
+        render: [unsafe: true, full_info_string: true],
+        syntax_highlight: [formatter: {:html_inline, theme: "github_dark"}]
+      ]
+
+      override = [
+        extension: [autolink: true],
+        render: [unsafe: false],
+        syntax_highlight: [formatter: {:html_inline, theme: "onedark"}]
+      ]
+
+      merged = NimblePublisherMDEx.deep_merge(base, override)
+
+      assert Keyword.get(merged, :extension) == [
+               table: true,
+               phoenix_heex: true,
+               autolink: true
+             ]
+
+      assert Keyword.get(merged, :render)[:unsafe] == false
+      assert Keyword.get(merged, :render)[:full_info_string] == true
+
+      assert Keyword.get(merged, :syntax_highlight)[:formatter] ==
+               {:html_inline, theme: "onedark"}
+    end
+
+    test "replaces non-keyword lists instead of merging them" do
+      base = [plugins: [MDExGFM], tags: ["elixir", "phoenix"]]
+      override = [plugins: [MDExGFM, MyPlugin], tags: ["mdex"]]
+
+      assert NimblePublisherMDEx.deep_merge(base, override) == [
+               plugins: [MDExGFM, MyPlugin],
+               tags: ["mdex"]
+             ]
+    end
+
+    test "overrides scalar values" do
+      assert NimblePublisherMDEx.deep_merge([unsafe: true], unsafe: false) == [unsafe: false]
+    end
+  end
+
   describe "convert/4" do
     test "converts markdown to HTML" do
       html = NimblePublisherMDEx.convert("post.md", "# Hello", %{}, [])
@@ -32,6 +76,30 @@ defmodule NimblePublisherMDExTest do
       assert html =~ "hello"
     end
 
+    test "enables code block decorators by default" do
+      body = """
+      ```elixir pre_class="featured-snippet" include_highlights
+      def hello do
+        :world
+      end
+      ```
+      """
+
+      html = NimblePublisherMDEx.convert("post.md", body, %{}, [])
+
+      assert html =~ "featured-snippet"
+    end
+
+    test "enables phoenix heex components by default" do
+      body =
+        ~s(<Phoenix.Component.link href="https://hex.pm/packages/mdex">Read the docs</Phoenix.Component.link>)
+
+      html = NimblePublisherMDEx.convert("post.md", body, %{}, [])
+
+      assert html =~ ~s(<a href="https://hex.pm/packages/mdex")
+      assert html =~ "Read the docs"
+    end
+
     test "handles .markdown extension" do
       html = NimblePublisherMDEx.convert("post.markdown", "# Hello", %{}, [])
       assert html =~ "<h1>Hello</h1>"
@@ -42,7 +110,20 @@ defmodule NimblePublisherMDExTest do
       assert html =~ "<h1>Hello</h1>"
     end
 
-    test "returns body unchanged for non-markdown extensions" do
+    test "handles .heex extension" do
+      html =
+        NimblePublisherMDEx.convert(
+          "post.heex",
+          ~s(<Phoenix.Component.link href="https://hex.pm/packages/mdex">Read the docs</Phoenix.Component.link>),
+          %{},
+          []
+        )
+
+      assert html =~ ~s(<a href="https://hex.pm/packages/mdex")
+      assert html =~ "Read the docs"
+    end
+
+    test "returns body unchanged for unsupported extensions" do
       body = "<p>Already HTML</p>"
       assert NimblePublisherMDEx.convert("post.html", body, %{}, []) == body
     end

@@ -1,4 +1,6 @@
 defmodule NimblePublisherMDEx do
+  require MDEx
+
   @external_resource "README.md"
 
   @moduledoc "README.md"
@@ -6,9 +8,18 @@ defmodule NimblePublisherMDEx do
              |> String.split("<!-- MDOC -->")
              |> Enum.fetch!(1)
 
-  @markdown_extensions [".md", ".markdown", ".livemd"]
+  @supported_extensions [".md", ".markdown", ".livemd", ".heex"]
 
   @default_opts [
+    plugins: [MDExGFM],
+    extension: [
+      phoenix_heex: true
+    ],
+    render: [
+      unsafe: true,
+      github_pre_lang: true,
+      full_info_string: true
+    ],
     syntax_highlight: [
       formatter:
         {:html_multi_themes,
@@ -39,7 +50,7 @@ defmodule NimblePublisherMDEx do
 
   MDEx options are resolved in the following order (later values win):
 
-    1. Built-in defaults (light/dark syntax highlighting)
+    1. Built-in defaults (unsafe HTML, Phoenix HEEx, code block decorators, light/dark syntax highlighting)
     2. Application config: `config :nimble_publisher_mdex, mdex_opts: [...]`
     3. `:mdex_opts` key passed through the NimblePublisher opts
 
@@ -71,14 +82,23 @@ defmodule NimblePublisherMDEx do
   def convert(filepath, body, _attrs, opts) do
     ext = filepath |> Path.extname() |> String.downcase()
 
-    if ext in @markdown_extensions do
-      mdex_opts = build_opts(opts)
-
-      MDEx.new(markdown: body, syntax_highlight: mdex_opts[:syntax_highlight])
-      |> MDExGFM.attach()
-      |> MDEx.to_html!()
+    if ext in @supported_extensions do
+      opts = build_opts(opts)
+      to_html(body, opts)
     else
       body
+    end
+  end
+
+  if Code.ensure_loaded?(Phoenix.LiveView) do
+    defp to_html(body, opts) do
+      body
+      |> MDEx.to_heex!(opts)
+      |> MDEx.to_html!()
+    end
+  else
+    defp to_html(body, opts) do
+      MDEx.to_html!(body, opts)
     end
   end
 
@@ -91,7 +111,8 @@ defmodule NimblePublisherMDEx do
     |> deep_merge(passthrough_opts)
   end
 
-  defp deep_merge(base, override) do
+  @doc false
+  def deep_merge(base, override) do
     Keyword.merge(base, override, fn
       _key, base_val, override_val when is_list(base_val) and is_list(override_val) ->
         if Keyword.keyword?(base_val) and Keyword.keyword?(override_val) do

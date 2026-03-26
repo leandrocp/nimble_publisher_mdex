@@ -157,7 +157,7 @@ if Code.ensure_loaded?(Igniter) do
       ## Code Highlighting
 
       MDEx uses [Lumis](https://hex.pm/packages/lumis) for syntax highlighting with automatic
-      light/dark theme support:
+      [light/dark theme](https://hexdocs.pm/mdex/light_dark_theme.html) support, and [code block decorators](https://hexdocs.pm/mdex/code_block_decorators-1.html) work out of the box:
 
       ```elixir
       defmodule Greeting do
@@ -166,6 +166,16 @@ if Code.ensure_loaded?(Igniter) do
         end
       end
       ```
+
+      ## Phoenix HEEx
+
+      You can also use Phoenix HEEx components directly in Markdown:
+
+      <Phoenix.Component.link
+        href="https://hexdocs.pm/mdex/phoenix_live_view_heex.html"
+      >
+        Read the MDEx Phoenix HEEx guide
+      </Phoenix.Component.link>
 
       > This post was scaffolded by `mix nimble_publisher_mdex.install`
       '''

@@ -5,12 +5,15 @@
 
 <!-- MDOC -->
 
-[NimblePublisher](https://hex.pm/packages/nimble_publisher) adapter for [MDEx](https://hex.pm/packages/mdex) and [Lumis](https://hex.pm/packages/lumis).
+[NimblePublisher](https://hex.pm/packages/nimble_publisher) adapter for [MDEx](https://hex.pm/packages/mdex) and [Lumis](https://hex.pm/packages/lumis), with support for both static Markdown rendering and Phoenix LiveView rendering.
 
-- Syntax highlighting for **110+ languages** powered by [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) via [Lumis](https://lumis.sh)
-- **120+ color themes** from the Neovim ecosystem
-- **Automatic light/dark mode** — zero JavaScript, pure CSS `light-dark()`
-- GitHub Flavored Markdown via [MDExGFM](https://hex.pm/packages/mdex_gfm) — tables, strikethrough, autolinks, task lists, footnotes, alerts, and more.
+- Syntax highlighting for 110+ languages powered by [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) via [Lumis](https://lumis.sh)
+- 120+ color themes from the Neovim ecosystem
+- Automatic light/dark mode
+- Static Markdown to HTML rendering
+- [Phoenix HEEx](https://hexdocs.pm/mdex/phoenix_live_view_heex.html) support when `:phoenix_live_view` is installed
+- [Code block decorators](https://hexdocs.pm/mdex/code_block_decorators-1.html)
+- GitHub Flavored Markdown via [MDExGFM](https://hex.pm/packages/mdex_gfm)
 - Extensible with [more plugins](https://hex.pm/packages?search=mdex_&sort=recent_downloads) — Mermaid diagrams, KaTeX math, Video, and more.
 
 ## Getting Started
@@ -84,6 +87,29 @@ Add the color-scheme meta tag to your root layout:
 ## Configuration
 
 Pass `:mdex_opts` to customize [MDEx Options](https://hexdocs.pm/mdex/MDEx.Document.html#t:options/0)
+
+Built-in defaults include:
+
+```elixir
+[
+  plugins: [MDExGFM],
+  extension: [phoenix_heex: true],
+  render: [
+    unsafe: true,
+    github_pre_lang: true,
+    full_info_string: true
+  ],
+  syntax_highlight: [
+    formatter:
+      {:html_multi_themes,
+       themes: [light: "github_light", dark: "github_dark"], default_theme: "light-dark()"}
+  ]
+]
+```
+
+Static Markdown rendering works out of the box. If you also want MDEx to render Phoenix HEEx through LiveView, install the optional `:phoenix_live_view` dependency.
+
+You can change the default options in the app config:
 
 ```elixir
 # config/config.exs

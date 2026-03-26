@@ -69,6 +69,7 @@ defmodule NimblePublisherMDEx.MixProject do
       mdex_dep(),
       {:mdex_gfm, ">= 0.2.0"},
       {:nimble_publisher, ">= 1.0.0"},
+      {:phoenix_live_view, "~> 1.0", optional: true},
       {:igniter, "~> 0.5", optional: true},
       {:ex_doc, ">= 0.0.0", only: :docs},
       {:makeup_elixir, "~> 1.0", only: :docs},

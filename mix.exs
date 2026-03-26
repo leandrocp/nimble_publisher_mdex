@@ -71,7 +71,8 @@ defmodule NimblePublisherMDEx.MixProject do
       {:nimble_publisher, ">= 1.0.0"},
       {:igniter, "~> 0.5", optional: true},
       {:ex_doc, ">= 0.0.0", only: :docs},
-      {:makeup_elixir, "~> 1.0", only: :docs}
+      {:makeup_elixir, "~> 1.0", only: :docs},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 

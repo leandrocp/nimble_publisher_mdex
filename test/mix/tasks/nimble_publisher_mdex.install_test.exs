@@ -16,12 +16,16 @@ defmodule Mix.Tasks.NimblePublisherMdex.InstallTest do
     "priv/posts/#{year}/#{month}-#{day}-hello-world.md"
   end
 
+  defp blog_path, do: "lib/test/blog.ex"
+  defp post_path, do: "lib/test/blog/post.ex"
+  defp live_path, do: "lib/test_web/blog_live.ex"
+
   test "creates all expected files" do
     test_project()
     |> Igniter.compose_task("nimble_publisher_mdex.install", [])
-    |> assert_creates("lib/blog/post.ex")
-    |> assert_creates("lib/blog.ex")
-    |> assert_creates("lib/web/blog_live.ex")
+    |> assert_creates(post_path())
+    |> assert_creates(blog_path())
+    |> assert_creates(live_path())
     |> assert_creates(sample_post_path())
   end
 
@@ -31,7 +35,7 @@ defmodule Mix.Tasks.NimblePublisherMdex.InstallTest do
       |> Igniter.compose_task("nimble_publisher_mdex.install", [])
       |> apply_igniter!()
 
-    post = get_content(igniter, "lib/blog/post.ex")
+    post = get_content(igniter, post_path())
 
     assert post =~ "@enforce_keys [:id, :title, :body, :description, :tags, :date]"
     assert post =~ "defstruct [:id, :title, :body, :description, :tags, :date]"
@@ -45,7 +49,7 @@ defmodule Mix.Tasks.NimblePublisherMdex.InstallTest do
       |> Igniter.compose_task("nimble_publisher_mdex.install", [])
       |> apply_igniter!()
 
-    blog = get_content(igniter, "lib/blog.ex")
+    blog = get_content(igniter, blog_path())
 
     assert blog =~ "use NimblePublisher"
     assert blog =~ "html_converter: NimblePublisherMDEx"
@@ -62,7 +66,7 @@ defmodule Mix.Tasks.NimblePublisherMdex.InstallTest do
       |> Igniter.compose_task("nimble_publisher_mdex.install", [])
       |> apply_igniter!()
 
-    live = get_content(igniter, "lib/web/blog_live.ex")
+    live = get_content(igniter, live_path())
 
     assert live =~ "use Phoenix.LiveView"
     assert live =~ "Blog.get_post_by_id!"
@@ -107,14 +111,14 @@ defmodule Mix.Tasks.NimblePublisherMdex.InstallTest do
       |> Igniter.compose_task("nimble_publisher_mdex.install", [])
       |> apply_igniter!()
 
-    blog = get_content(igniter, "lib/blog.ex")
+    blog = get_content(igniter, "lib/my_blog/blog.ex")
     assert blog =~ ~s|Application.app_dir(:my_blog, "priv/posts/**/*.md")|
     assert blog =~ "html_converter: NimblePublisherMDEx"
 
-    post = get_content(igniter, "lib/blog/post.ex")
+    post = get_content(igniter, "lib/my_blog/blog/post.ex")
     assert post =~ "def build(filename, attrs, body) do"
 
-    live = get_content(igniter, "lib/web/blog_live.ex")
+    live = get_content(igniter, "lib/my_blog_web/blog_live.ex")
     assert live =~ "use Phoenix.LiveView"
     assert live =~ "Blog.all_posts()"
   end

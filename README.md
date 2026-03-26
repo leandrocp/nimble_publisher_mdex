@@ -19,7 +19,7 @@ Pick the path that fits your situation:
 
 - **[New project](#new-project)** — start from scratch with Phoenix + blog
 - **[Add a blog to an existing Phoenix project](#add-a-blog-to-an-existing-phoenix-project)** — scaffold a blog into your app
-- **[Switch from Earmark to MDEx](#switch-from-earmark-to-mdex-in-an-existing-nimble_publisher-project)** — already using NimblePublisher
+- **[Switch from Earmark to MDEx](#switch-from-earmark-to-mdex)** — already using NimblePublisher
 
 ### New project
 
@@ -51,7 +51,7 @@ This will add the dependency and generate a blog module, sample post, and LiveVi
 <meta name="color-scheme" content="light dark">
 ```
 
-### Switch from Earmark to MDEx in an existing NimblePublisher project
+### Switch from Earmark to MDEx
 
 Add the dependency:
 

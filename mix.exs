@@ -2,7 +2,7 @@ defmodule NimblePublisherMDEx.MixProject do
   use Mix.Project
 
   @source_url "https://github.com/leandrocp/nimble_publisher_mdex"
-  @version "0.0.1"
+  @version "0.1.1"
 
   def project do
     [

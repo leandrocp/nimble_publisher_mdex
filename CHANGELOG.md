@@ -12,8 +12,3 @@
 
 * install and styles ([c2ada64](https://github.com/leandrocp/nimble_publisher_mdex/commit/c2ada64c2fe9c0526371bd043fd01d20ab455dd8))
 
-## Changelog
-
-## Unreleased
-
-Initial release.

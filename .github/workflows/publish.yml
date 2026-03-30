@@ -7,14 +7,7 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: erlef/setup-beam@v1
-        with:
-          otp-version: "28"
-          elixir-version: "1.19"
-      - run: mix deps.get
-      - run: mix hex.publish --yes
-        env:
-          HEX_API_KEY: ${{ secrets.HEX_API_KEY }}
+    if: startsWith(github.ref, 'refs/tags/v')
+    uses: leandrocp/github-actions/.github/workflows/hex-publish.yml@main
+    secrets:
+      HEX_API_KEY: ${{ secrets.HEX_API_KEY }}

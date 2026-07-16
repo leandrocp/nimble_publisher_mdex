@@ -100,9 +100,12 @@ Built-in defaults include:
     full_info_string: true
   ],
   syntax_highlight: [
-    formatter:
-      {:html_multi_themes,
-       themes: [light: "github_light", dark: "github_dark"], default_theme: "light-dark()"}
+    engine: :lumis,
+    opts: [
+      formatter:
+        {:html_multi_themes,
+         themes: [light: "github_light", dark: "github_dark"], default_theme: "light-dark()"}
+    ]
   ]
 ]
 ```
@@ -116,7 +119,8 @@ You can change the default options in the app config:
 config :nimble_publisher_mdex,
   mdex_opts: [
     syntax_highlight: [
-      formatter: {:html_inline, theme: "dracula"}
+      engine: :lumis,
+      opts: [formatter: {:html_inline, theme: "dracula"}]
     ]
   ]
 ```
@@ -137,7 +141,7 @@ use NimblePublisher,
 Browse all available themes at [lumis.sh](https://lumis.sh). Some popular choices:
 
 | Theme | Style |
-|-------|-------|
+| ------- | ------- |
 | `github_light` / `github_dark` | GitHub (default) |
 | `catppuccin_latte` / `catppuccin_mocha` | Catppuccin |
 | `tokyonight_day` / `tokyonight_storm` | Tokyo Night |

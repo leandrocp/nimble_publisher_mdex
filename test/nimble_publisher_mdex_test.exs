@@ -6,13 +6,19 @@ defmodule NimblePublisherMDExTest do
       base = [
         extension: [table: true, phoenix_heex: true],
         render: [unsafe: true, full_info_string: true],
-        syntax_highlight: [formatter: {:html_inline, theme: "github_dark"}]
+        syntax_highlight: [
+          engine: :lumis,
+          opts: [formatter: {:html_inline, theme: "github_dark"}]
+        ]
       ]
 
       override = [
         extension: [autolink: true],
         render: [unsafe: false],
-        syntax_highlight: [formatter: {:html_inline, theme: "onedark"}]
+        syntax_highlight: [
+          engine: :lumis,
+          opts: [formatter: {:html_inline, theme: "onedark"}]
+        ]
       ]
 
       merged = NimblePublisherMDEx.deep_merge(base, override)
@@ -26,7 +32,9 @@ defmodule NimblePublisherMDExTest do
       assert Keyword.get(merged, :render)[:unsafe] == false
       assert Keyword.get(merged, :render)[:full_info_string] == true
 
-      assert Keyword.get(merged, :syntax_highlight)[:formatter] ==
+      assert Keyword.get(merged, :syntax_highlight)[:engine] == :lumis
+
+      assert Keyword.get(merged, :syntax_highlight)[:opts][:formatter] ==
                {:html_inline, theme: "onedark"}
     end
 
@@ -183,7 +191,10 @@ defmodule NimblePublisherMDExTest do
       html =
         NimblePublisherMDEx.convert("post.md", body, %{},
           mdex_opts: [
-            syntax_highlight: [formatter: {:html_inline, theme: "onedark"}]
+            syntax_highlight: [
+              engine: :lumis,
+              opts: [formatter: {:html_inline, theme: "onedark"}]
+            ]
           ]
         )
 

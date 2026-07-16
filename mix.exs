@@ -67,6 +67,7 @@ defmodule NimblePublisherMDEx.MixProject do
   defp deps do
     [
       mdex_dep(),
+      {:lumis, "~> 0.1"},
       {:mdex_gfm, ">= 0.2.0"},
       {:nimble_publisher, ">= 1.0.0"},
       {:phoenix_live_view, "~> 1.0", optional: true},
@@ -81,7 +82,7 @@ defmodule NimblePublisherMDEx.MixProject do
     if path = System.get_env("MDEX_PATH") do
       {:mdex, path: path}
     else
-      {:mdex, ">= 0.9.0"}
+      {:mdex, ">= 0.13.0"}
     end
   end
 

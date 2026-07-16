@@ -21,9 +21,12 @@ defmodule NimblePublisherMDEx do
       full_info_string: true
     ],
     syntax_highlight: [
-      formatter:
-        {:html_multi_themes,
-         themes: [light: "github_light", dark: "github_dark"], default_theme: "light-dark()"}
+      engine: :lumis,
+      opts: [
+        formatter:
+          {:html_multi_themes,
+           themes: [light: "github_light", dark: "github_dark"], default_theme: "light-dark()"}
+      ]
     ]
   ]
 
@@ -66,7 +69,10 @@ defmodule NimblePublisherMDEx do
       # Override via application config
       config :nimble_publisher_mdex,
         mdex_opts: [
-          syntax_highlight: [formatter: {:html_inline, theme: "dracula"}]
+          syntax_highlight: [
+            engine: :lumis,
+            opts: [formatter: {:html_inline, theme: "dracula"}]
+          ]
         ]
 
       # Override via NimblePublisher opts

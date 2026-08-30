@@ -2,6 +2,11 @@ if Code.ensure_loaded?(Igniter) do
   defmodule Mix.Tasks.NimblePublisherMdex.Install do
     use Igniter.Mix.Task
 
+    # Aliased under an `Igniter` prefix because the plain last names would
+    # shadow `Function` and the `Phoenix` namespace used in the generated code.
+    alias Igniter.Code.Function, as: IgniterFunction
+    alias Igniter.Libs.Phoenix, as: IgniterPhoenix
+
     @shortdoc "Sets up a NimblePublisher blog with MDEx"
 
     @moduledoc """
@@ -28,7 +33,7 @@ if Code.ensure_loaded?(Igniter) do
     def igniter(igniter) do
       app_module = Igniter.Project.Module.module_name_prefix(igniter)
       app_name = Igniter.Project.Application.app_name(igniter)
-      web_module = Igniter.Libs.Phoenix.web_module(igniter)
+      web_module = IgniterPhoenix.web_module(igniter)
 
       blog_module = Module.concat(app_module, "Blog")
       post_module = Module.concat(blog_module, "Post")
@@ -48,12 +53,12 @@ if Code.ensure_loaded?(Igniter) do
     end
 
     defp add_blog_routes(igniter, web_module) do
-      {igniter, router} = Igniter.Libs.Phoenix.select_router(igniter)
+      {igniter, router} = IgniterPhoenix.select_router(igniter)
 
       if is_nil(router) || blog_routes_installed?(igniter, router) do
         igniter
       else
-        Igniter.Libs.Phoenix.append_to_scope(
+        IgniterPhoenix.append_to_scope(
           igniter,
           "/",
           """
@@ -74,11 +79,11 @@ if Code.ensure_loaded?(Igniter) do
     end
 
     defp live_route_exists?(zipper, path) do
-      case Igniter.Code.Function.move_to_function_call_in_current_scope(
+      case IgniterFunction.move_to_function_call_in_current_scope(
              zipper,
              :live,
              [2, 3, 4],
-             &Igniter.Code.Function.argument_equals?(&1, 0, path)
+             &IgniterFunction.argument_equals?(&1, 0, path)
            ) do
         {:ok, _zipper} -> true
         :error -> false

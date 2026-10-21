@@ -7,7 +7,7 @@
 
 [NimblePublisher](https://hex.pm/packages/nimble_publisher) adapter for [MDEx](https://hex.pm/packages/mdex) and [Lumis](https://hex.pm/packages/lumis), with support for both static Markdown rendering and Phoenix LiveView rendering.
 
-- Syntax highlighting for 110+ languages powered by [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) via [Lumis](https://lumis.sh)
+- Syntax highlighting for 110+ languages powered by [Tree-sitter](https://tree-sitter.github.io/tree-sitter/) via [Lumis](https://docs.lumis.sh) — install only the parsers you need
 - 120+ color themes from the Neovim ecosystem
 - Automatic light/dark mode
 - Static Markdown to HTML rendering
@@ -76,13 +76,30 @@ use NimblePublisher,
   html_converter: NimblePublisherMDEx
 ```
 
-Remove the `:highlighters` option and any `makeup_*` dependencies — MDEx handles syntax highlighting out of the box.
+Remove the `:highlighters` option and any `makeup_*` dependencies — MDEx uses Lumis for syntax highlighting. Install the language parsers you need as described below.
 
 Add the color-scheme meta tag to your root layout:
 
 ```html
 <meta name="color-scheme" content="light dark">
 ```
+
+### Language parsers
+
+NimblePublisherMDEx does not bundle language parsers or install them through its installer. With Lumis 0.9+, add the `lumis_wasm_*` packages for the languages used in your code blocks to your application's dependencies. For example, to highlight Elixir:
+
+```elixir
+def deps do
+  [
+    {:nimble_publisher_mdex, "~> 0.1"},
+    {:lumis_wasm_elixir, "~> 0.26.0"}
+  ]
+end
+```
+
+Run `mix deps.get` after adding parsers. Languages without an installed parser render as plain text inside the themed code block; Lumis does not download missing parsers at runtime. Markdown rendering works without any parsers.
+
+See the [Lumis Elixir guide](https://docs.lumis.sh/usage/elixir) for setup and the [language catalog](https://docs.lumis.sh/reference/languages) for parser packages and bundles. Some languages inject others, such as comments inside Elixir or CSS and JavaScript inside HTML; install those parsers too if you want them highlighted.
 
 ## Configuration
 
@@ -138,7 +155,7 @@ use NimblePublisher,
 
 ### Themes
 
-Browse all available themes at [lumis.sh](https://lumis.sh). Some popular choices:
+Browse all available themes in the [Lumis theme catalog](https://docs.lumis.sh/reference/themes). Some popular choices:
 
 | Theme | Style |
 | ------- | ------- |

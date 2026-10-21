@@ -161,8 +161,11 @@ if Code.ensure_loaded?(Igniter) do
 
       ## Code Highlighting
 
-      MDEx uses [Lumis](https://hex.pm/packages/lumis) for syntax highlighting with automatic
-      [light/dark theme](https://hexdocs.pm/mdex/light_dark_theme.html) support, and [code block decorators](https://hexdocs.pm/mdex/code_block_decorators-1.html) work out of the box:
+      MDEx uses [Lumis](https://docs.lumis.sh) for syntax highlighting with automatic
+      [light/dark theme](https://hexdocs.pm/mdex/light_dark_theme.html) support and [code block decorators](https://hexdocs.pm/mdex/code_block_decorators-1.html).
+      No language parsers are installed automatically. Add the `lumis_wasm_*` dependencies
+      you need by following the [Lumis Elixir guide](https://docs.lumis.sh/usage/elixir).
+      Without an installed parser, a code block renders as plain text:
 
       ```elixir
       defmodule Greeting do
